@@ -1,0 +1,19 @@
+[
+    {
+        "id": 1,
+        "title": "Software Engineer",
+        "type": "Full Time",
+        "description": "adfsdf",
+        "location": "Remote",
+        "maxParticipants": 30,
+        "startTime": "2022-01-01T00:00:00",
+        "endTime": "03:00:00",
+        "host": {
+            "id": 1,
+            "name": "John Doe",
+            "description": "Software Engineer",
+            "email": "g6u7A@example.com",
+            "phone": "1234567890"
+        }
+    }
+]

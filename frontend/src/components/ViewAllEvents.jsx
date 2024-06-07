@@ -1,0 +1,15 @@
+import { Link } from 'react-router-dom';
+
+const ViewAllEvents = () => {
+  return (
+    <section className='m-auto max-w-lg my-10 px-6'>
+      <Link
+        to='/events'
+        className='block bg-black text-white text-center py-4 px-6 rounded-xl hover:bg-gray-700'
+      >
+        View All Events
+      </Link>
+    </section>
+  );
+};
+export default ViewAllEvents;
