@@ -47,6 +47,9 @@ const Navbar = () => {
                 <NavLink to='/my-events' className={linkClass}>
                   My Eveents
                 </NavLink>
+                <NavLink to='/add-event' className={linkClass}>
+                  Add Eveent
+                </NavLink>
                 <NavLink to='/login' className={linkClass}>
                   Log in
                 </NavLink>

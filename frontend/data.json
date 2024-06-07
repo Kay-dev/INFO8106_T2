@@ -1,9 +1,9 @@
 [
     {
         "id": 1,
-        "title": "Software Engineer",
-        "type": "Full Time",
-        "description": "adfsdf",
+        "title": "Mastering Energy Efficiency at Home",
+        "type": "Online Webinar",
+        "description": "Join us for an insightful online seminar where experts will share practical tips and innovative solutions for reducing energy consumption in your home. Learn how to cut down your electricity bills and contribute to a greener planet.",
         "location": "Remote",
         "maxParticipants": 30,
         "startTime": "2022-01-01T00:00:00",
@@ -11,7 +11,41 @@
         "host": {
             "id": 1,
             "name": "John Doe",
-            "description": "Software Engineer",
+            "description": "EcoFuture Alliance is a leading non-profit organization dedicated to promoting sustainable living and environmental stewardship. Our mission is to empower communities with the knowledge and resources needed to make eco-friendly choices and to foster a global movement towards a more sustainable future. Through educational programs, community events, and advocacy efforts, we strive to create a healthier planet for future generations. Join us in our commitment to sustainability and be a part of the change!",
+            "email": "g6u7A@example.com",
+            "phone": "1234567890"
+        }
+    },
+    {
+        "id": 2,
+        "title": "Mastering Energy Efficiency at Home",
+        "type": "Online Webinar",
+        "description": "Join us for an insightful online seminar where experts will share practical tips and innovative solutions for reducing energy consumption in your home. Learn how to cut down your electricity bills and contribute to a greener planet.",
+        "location": "Remote",
+        "maxParticipants": 30,
+        "startTime": "2022-01-01T00:00:00",
+        "endTime": "03:00:00",
+        "host": {
+            "id": 1,
+            "name": "John Doe",
+            "description": "EcoFuture Alliance is a leading non-profit organization dedicated to promoting sustainable living and environmental stewardship. Our mission is to empower communities with the knowledge and resources needed to make eco-friendly choices and to foster a global movement towards a more sustainable future. Through educational programs, community events, and advocacy efforts, we strive to create a healthier planet for future generations. Join us in our commitment to sustainability and be a part of the change!",
+            "email": "g6u7A@example.com",
+            "phone": "1234567890"
+        }
+    },
+    {
+        "id": 3,
+        "title": "Mastering Energy Efficiency at Home",
+        "type": "Online Webinar",
+        "description": "Join us for an insightful online seminar where experts will share practical tips and innovative solutions for reducing energy consumption in your home. Learn how to cut down your electricity bills and contribute to a greener planet.",
+        "location": "Remote",
+        "maxParticipants": 30,
+        "startTime": "2022-01-01T00:00:00",
+        "endTime": "03:00:00",
+        "host": {
+            "id": 1,
+            "name": "John Doe",
+            "description": "EcoFuture Alliance is a leading non-profit organization dedicated to promoting sustainable living and environmental stewardship. Our mission is to empower communities with the knowledge and resources needed to make eco-friendly choices and to foster a global movement towards a more sustainable future. Through educational programs, community events, and advocacy efforts, we strive to create a healthier planet for future generations. Join us in our commitment to sustainability and be a part of the change!",
             "email": "g6u7A@example.com",
             "phone": "1234567890"
         }

@@ -10,26 +10,26 @@ import HomePage from './pages/HomePage';
 import EventsPage from './pages/EventsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import EventPage, { eventLoader } from './pages/EventPage';
-import AddJobPage from './pages/AddJobPage';
-import EditJobPage from './pages/EditJobPage';
+import EditEventPage from './pages/EditEventPage';
 import MyEventsPage from './pages/MyEventsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import AddEventPage from './pages/AddEventPage';
 
 function App() {
 
-  const addJob = async (newJob) => {
+  const addEvent = async (newEvent) => {
     return;
   };
 
-  // Delete Job
-  const deleteJob = async (id) => {
+  // Delete Event
+  const deleteEvent = async (id) => {
 
     return;
   };
 
-  // Update Job
-  const updateJob = async (job) => {
+  // Update Event
+  const updateEvent = async (job) => {
 
     return;
   };
@@ -42,15 +42,15 @@ function App() {
         <Route path='/my-events' element={<MyEventsPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/sign-up' element={<RegisterPage />} />
-        <Route path='/add-job' element={<AddJobPage addJobSubmit={addJob} />} />
+        <Route path='/add-event' element={<AddEventPage addEventSubmit={addEvent} />} />
         <Route
-          path='/edit-job/:id'
-          element={<EditJobPage updateJobSubmit={updateJob} />}
+          path='/edit-event/:id'
+          element={<EditEventPage addEventSubmit={updateEvent} />}
           loader={eventLoader}
         />
         <Route
           path='/events/:id'
-          element={<EventPage deleteEvent={deleteJob} />}
+          element={<EventPage deleteEvent={deleteEvent} />}
           loader={eventLoader}
         />
         <Route path='*' element={<NotFoundPage />} />
