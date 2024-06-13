@@ -15,6 +15,7 @@ import MyEventsPage from './pages/MyEventsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AddEventPage from './pages/AddEventPage';
+import { UserProvider } from './context/UserContext';
 
 function App() {
 
@@ -29,7 +30,7 @@ function App() {
   };
 
   // Update Event
-  const updateEvent = async (job) => {
+  const updateEvent = async (event) => {
 
     return;
   };
@@ -58,7 +59,11 @@ function App() {
     )
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
+  );
 }
 
 export default App

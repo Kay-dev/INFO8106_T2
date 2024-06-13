@@ -9,10 +9,10 @@ const EventListings = ({ isHome = false }) => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const apiUrl = isHome ? '/api/events?_limit=3' : '/api/events';
+      // const apiUrl = isHome ? '/api/events?_limit=3' : '/api/events';
       try {
-        const res = await fetch(apiUrl);
-        const data = await res.json();
+        // const res = await fetch(apiUrl);
+        // const data = await res.json();
         setEvents(data);
       } catch (error) {
         console.log('Error fetching data', error);

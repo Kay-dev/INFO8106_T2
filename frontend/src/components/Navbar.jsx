@@ -1,8 +1,13 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import {useUser} from "../context/UserContext";
+import { toast } from 'react-toastify';
+
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const {user, setUser} = useUser();
+
 
   const linkClass = ({ isActive }) =>
     isActive
@@ -16,14 +21,34 @@ const Navbar = () => {
       // 调用登出 API
       // await fetch('/api/logout', {
       //   method: 'POST',
-        
-      // });
 
-      navigate('/');
+      // });
+      window.localStorage.removeItem('loggedUser');
+      setUser(null);
+      toast.success('You have successfully logged out.');
     } catch (error) {
       console.error('Error during logout:', error);
     }
   };
+
+  const getMenuForRole = (role) => {
+    switch (role) {
+      case 'admin':
+        return (
+          <>
+            <NavLink to='/add-event' className={linkClass}>Add Event</NavLink>
+          </>
+        );
+      case 'user':
+        return (
+          <>
+            <NavLink to='/my-events' className={linkClass}>My Events</NavLink>
+          </>
+        );
+      default:
+        return null;
+    }
+  }
 
   return (
     <nav className='bg-indigo-700 border-b border-indigo-500'>
@@ -44,26 +69,29 @@ const Navbar = () => {
                 <NavLink to='/events' className={linkClass}>
                   Events
                 </NavLink>
-                <NavLink to='/my-events' className={linkClass}>
-                  My Eveents
-                </NavLink>
-                <NavLink to='/add-event' className={linkClass}>
-                  Add Eveent
-                </NavLink>
-                <NavLink to='/login' className={linkClass}>
-                  Log in
-                </NavLink>
-                <NavLink to='/sign-up' className={linkClass}>
-                  Sign up
-                </NavLink>
-                <NavLink to='/logout' className={linkClass} onClick={handleLogout} >
-                  Log out
-                </NavLink>
+                {user && getMenuForRole(user.role)}
+                {
+                  user ? 
+                    <NavLink to='/logout' className={linkClass} onClick={handleLogout} >
+                      Log out
+                    </NavLink>
+                    :(
+                      <>
+                        <NavLink to='/login' className={linkClass}>
+                          Login
+                        </NavLink>
+                        <NavLink to='/sign-up' className={linkClass}>
+                          Sign Up
+                        </NavLink>
+                      </>
+                    )
+                }
               </div>
             </div>
           </div>
         </div>
       </div>
+
     </nav>
   );
 };
