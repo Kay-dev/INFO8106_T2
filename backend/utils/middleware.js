@@ -23,11 +23,11 @@ const errorHandler = (error, request, response, next) => {
     } else if (error.name === 'ValidationError') {
         return response.status(400).json({ error: error.message })
     } else if (error.name === 'MongoServerError' && error.message.includes('duplicate key error')) {
-        return response.status(409).json({ error: 'username must be unique' })
+        return response.status(409).json({ error: 'The email is already registered' })
     } else if(error.name === 'JsonWebTokenError') { 
-        return response.status(401).json({ error: 'invalid token' })
+        return response.status(401).json({ error: 'Invalid token' })
     } else if (error.name === 'TokenExpiredError') {
-        return response.status(401).json({ error: 'token expired' })
+        return response.status(401).json({ error: 'Token expired' })
     }
     next(error)
 }
