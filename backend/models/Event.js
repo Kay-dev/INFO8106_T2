@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const eventSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     type: {
         type: String,
@@ -36,10 +37,17 @@ const eventSchema = new mongoose.Schema({
     maxParticipants: {
         type: Number,
         required: true
-    }
+    },
+
+    subscribers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ]
 });
 
-userSchema.set('toJSON', {
+eventSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString();
         delete returnedObject._id;
@@ -48,5 +56,5 @@ userSchema.set('toJSON', {
 });
 
 
-const Event = mongoose.model('Event', userSchema);
+const Event = mongoose.model('Event', eventSchema);
 module.exports = Event
