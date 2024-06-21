@@ -10,6 +10,7 @@ const middleware = require('./utils/middleware')
 const logger = require('./utils/logger');
 const mongoose = require('mongoose');
 
+
 const url = config.MONGODB_URI
 mongoose.set('strictQuery', false);
 
@@ -23,7 +24,6 @@ mongoose.connect(url)
     })
 
 app.use(cors());
-app.use(express.static("dist"))
 app.use(express.json());
 
 // middlewares

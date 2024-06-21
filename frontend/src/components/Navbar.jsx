@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation  } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import {useUser} from "../context/UserContext";
 import { toast } from 'react-toastify';
@@ -6,7 +6,8 @@ import { toast } from 'react-toastify';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const {user, setUser} = useUser();
+  const location = useLocation();
+  const {user, userLogout} = useUser();
 
 
   const linkClass = ({ isActive }) =>
@@ -23,8 +24,12 @@ const Navbar = () => {
       //   method: 'POST',
 
       // });
-      window.localStorage.removeItem('loggedUser');
-      setUser(null);
+      userLogout();
+      if (location.pathname === window.location.pathname) {
+        window.location.reload();
+      } else{
+        navigate('/');
+      }
       toast.success('You have successfully logged out.');
     } catch (error) {
       console.error('Error during logout:', error);
@@ -32,6 +37,7 @@ const Navbar = () => {
   };
 
   const getMenuForRole = (role) => {
+
     switch (role) {
       case 'admin':
         return (

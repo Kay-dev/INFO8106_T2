@@ -3,11 +3,15 @@ import { FaArrowLeft, FaMapMarker } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import data from '../../data.json';
+import { getEvent } from '../services/event';
+import {useUser} from "../context/UserContext";
+
 
 
 const EventPage = ({  deleteEvent }) => {
   const navigate = useNavigate();
   const event = useLoaderData();
+  const {user} = useUser();
 
   const onDeleteClick = (Id) => {
     const confirm = window.confirm(
@@ -52,7 +56,7 @@ const EventPage = ({  deleteEvent }) => {
                 </h3>
                 <p className='mb-4'>{event.description}</p>
                 <h3 className="text-indigo-800 text-lg font-bold mb-2">Event Time</h3>
-                <p className='mb-4'>{event.startTime}-{event.endTime}</p>
+                <p className='mb-4'>{(new Date(event.startTime)).toLocaleString()}-&nbsp;{(new Date(event.endTime)).toLocaleString()}</p>
               </div>
             </main>
 
@@ -60,7 +64,7 @@ const EventPage = ({  deleteEvent }) => {
             <aside>
               <div className='bg-white p-6 rounded-lg shadow-md'>
                 <h3 className='text-xl font-bold mb-6'>Host Info</h3>
-                <h2 className='text-2xl'>{event.host.name}</h2>
+                <h2 className='text-2xl'>{event.host.username}</h2>
                 <p className='my-2'>{event.host.description}</p>
                 <hr className='my-4' />
                 <h3 className='text-xl'>Contact Email:</h3>
@@ -74,21 +78,24 @@ const EventPage = ({  deleteEvent }) => {
                 </p>
               </div>
 
+            {
+              user && user.role === 'admin' &&               
               <div className='bg-white p-6 rounded-lg shadow-md mt-6'>
-                <h3 className='text-xl font-bold mb-6'>Manage Event</h3>
-                <Link
-                  to={`/edit-event/${event.id}`}
-                  className='bg-indigo-500 hover:bg-indigo-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block'
-                >
-                  Edit Event
-                </Link>
-                <button
-                  onClick={() => onDeleteClick(event.id)}
-                  className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block'
-                >
-                  Delete Event
-                </button>
-              </div>
+              <h3 className='text-xl font-bold mb-6'>Manage Event</h3>
+              <Link
+                to={`/edit-event/${event.id}`}
+                className='bg-indigo-500 hover:bg-indigo-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block'
+              >
+                Edit Event
+              </Link>
+              <button
+                onClick={() => onDeleteClick(event.id)}
+                className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block'
+              >
+                Delete Event
+              </button>
+            </div>
+            }
             </aside>
           </div>
         </div>
@@ -98,10 +105,11 @@ const EventPage = ({  deleteEvent }) => {
 };
 
 const eventLoader = async ({ params }) => {
-  // const res = await fetch(`/api/events/${params.id}`);
-  // const data = await res.json();
-  // return data;
-  return data[0];
+  const res = await getEvent(params.id);
+  if (!res) {
+    throw new Error('Event not found');
+  }
+  return res
 };
 
 export { EventPage as default, eventLoader };

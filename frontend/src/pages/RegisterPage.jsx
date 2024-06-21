@@ -3,6 +3,8 @@ import * as Yup from 'yup';
 import { createUser } from '../services/user';
 import { toast } from 'react-toastify';
 import {useNavigate} from "react-router-dom";
+import { Link } from 'react-router-dom';
+
 
 const RegisterPage = () => {
 
@@ -75,20 +77,20 @@ const RegisterPage = () => {
                                         className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
                                     <ErrorMessage name="phone" component="div" className="text-red-500 text-sm mt-2" />
                                 </div>
-                                <div className="mb-4">
+                                {/* <div className="mb-4">
                                     <label htmlFor="description" className="block text-gray-700">Description</label>
                                     <Field id="description" name="description" as="textarea"
                                         className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
                                     <ErrorMessage name="description" component="div" className="text-red-500 text-sm mt-2" />
-                                </div>
+                                </div> */}
                             </div>
                             <div className="mb-4">
                                 <button type="submit" disabled={isSubmitting}
                                     className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-md text-lg font-semibold">Register</button>
                             </div>
                             <div className="text-center text-gray-700">
-                                Already have an account? <a href="/login"
-                                    className="text-indigo-500 hover:text-indigo-700">Login</a>
+                                Already have an account? <Link to="/login"
+                                    className="text-indigo-500 hover:text-indigo-700">Login</Link>
                             </div>
                         </Form>)}
                 </Formik>

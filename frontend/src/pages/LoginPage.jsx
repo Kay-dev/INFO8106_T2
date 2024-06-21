@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom"
 import {useUser} from "../context/UserContext";
 import { toast } from 'react-toastify';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 
 const LoginPage = () => {
   const[email, setEmail] = useState("")
   const[password, setPassword] = useState("")
 
-  const { setUser } = useUser();
+  const { userLogin } = useUser();
 
   const navigator = useNavigate()
 
@@ -18,8 +19,7 @@ const LoginPage = () => {
     try {
       const loggedUser = await login({email, password})
       if (loggedUser) {
-        window.localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
-        setUser(loggedUser)
+        userLogin(loggedUser)
         toast.success('You have successfully logged in.');
         navigator("/")
       }
@@ -50,7 +50,8 @@ const LoginPage = () => {
                 className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-md text-lg font-semibold">Login</button>
             </div>
             <div className="text-center text-gray-700">
-              Dont have an account? <a href="/sign-up" className="text-indigo-500 hover:text-indigo-700">Sign up</a>
+              Dont have an account? 
+              <Link to="/sign-up" className="text-indigo-500 hover:text-indigo-700">Sign up</Link>
             </div>
           </div>
         </form>
