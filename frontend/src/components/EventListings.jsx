@@ -21,7 +21,7 @@ const EventListings = ({ isHome = false, myEvent = false }) => {
           setUserEvents(userEvents.map((e) => e.id));
         } else{
           // get all events
-          const data = await getAllEvents(3)
+          const data = await getAllEvents(isHome?3:'')
           setEvents(data);
           // get users events
           setUserEvents(userEvents.map((e) => e.id));
