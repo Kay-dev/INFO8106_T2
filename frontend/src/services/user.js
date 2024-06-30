@@ -1,5 +1,5 @@
 import axios from "axios";
-const url = "/api/users"
+const url = `${import.meta.env.VITE_SERVER_URI}/api/users`
 
 
 // create user

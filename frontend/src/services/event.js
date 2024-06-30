@@ -1,5 +1,5 @@
 import axios from "axios";
-const url = "/api/events/"
+const url = `${import.meta.env.VITE_SERVER_URI}/api/events/`
 
 
 export const setToken = () => {
