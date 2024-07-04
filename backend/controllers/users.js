@@ -56,5 +56,10 @@ usersRouter.post('/', checkSchemas, async (req, res) => {
     res.status(201).json(savedUser)
 })
 
+// get host users
+usersRouter.get('/hosts', async (req, res) => {
+    const users = await User.find({role: 'host'})
+    res.json(users)
+})
 
 module.exports = usersRouter

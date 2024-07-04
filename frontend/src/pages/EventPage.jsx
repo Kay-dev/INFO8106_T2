@@ -2,10 +2,9 @@ import {  useLoaderData, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaMapMarker } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import data from '../../data.json';
 import { getEvent } from '../services/event';
 import {useUser} from "../context/UserContext";
-
+import dayjs from 'dayjs';
 
 
 const EventPage = ({  deleteEvent }) => {
@@ -56,7 +55,11 @@ const EventPage = ({  deleteEvent }) => {
                 </h3>
                 <p className='mb-4'>{event.description}</p>
                 <h3 className="text-indigo-800 text-lg font-bold mb-2">Event Time</h3>
-                <p className='mb-4'>{(new Date(event.startTime)).toLocaleString()}-&nbsp;{(new Date(event.endTime)).toLocaleString()}</p>
+                <p className='mb-4'>{dayjs(event.startTime).format('YYYY-MM-DD HH:mm')}~&nbsp;{dayjs(event.endTime).format('YYYY-MM-DD HH:mm')}</p>
+                <h3 className='text-indigo-800 text-lg font-bold mb-6'>
+                  Max Participants
+                </h3>
+                <p className='mb-4'>{event.maxParticipants}</p>
               </div>
             </main>
 

@@ -13,5 +13,9 @@ export const createUser = async (user) => {
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Register failed')
     }
+}
 
+export const getHosts = async () => {
+    const response = await axios.get(`${url}/hosts`)
+    return response.data
 }

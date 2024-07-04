@@ -41,8 +41,9 @@ const checkSchemas = checkSchema({
     // }
 })
 
+// get all events
 eventsRouter.get('/', async (req, res) => {
-    const events = await Event.find({}).populate('host', { username: 1, email: 1, phone: 1, description: 1 })
+    const events = await Event.find({}).populate('host', { username: 1, email: 1, phone: 1, description: 1 }).sort({'_id': -1})
     let limit = req.query.limit
     
     if (limit){
@@ -53,6 +54,7 @@ eventsRouter.get('/', async (req, res) => {
     }
 })
 
+// get events by user
 eventsRouter.get('/user', async (req, res) => {
     // decode token
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
@@ -67,7 +69,7 @@ eventsRouter.get('/user', async (req, res) => {
     res.json(user.events)
 })
 
-
+// get event by event_id
 eventsRouter.get('/:id', async (req, res) => {
     const event = await Event.findById(req.params.id).populate('host', { username: 1, email: 1, phone: 1, description: 1 })
     if (event) {
@@ -78,12 +80,12 @@ eventsRouter.get('/:id', async (req, res) => {
 })
 
 
-
+// add new event
 eventsRouter.post('/', checkSchemas, async (req, res) => {
     const {host} = req.body
     const user = await User.findOne({_id: host})
     if (!user) {
-        return res.status(404).send({error: 'user not found'})
+        return res.status(404).send({error: 'host not found'})
     }
     const event = new Event({
         title: req.body.title,
@@ -100,10 +102,34 @@ eventsRouter.post('/', checkSchemas, async (req, res) => {
     res.status(201).json(savedEvent)
 })
 
+// update event
+eventsRouter.put('/:id', async (req, res) => {
+    const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    if (updatedEvent) {
+        res.json(updatedEvent)
+    } else {
+        res.status(404).end()
+    }
+})
+
+// delete event
+eventsRouter.delete('/:id', async (req, res) => {
+    const deletedEvent = await Event.findByIdAndDelete(req.params.id)
+    if (deletedEvent) {
+        res.status(204).end()
+    } else {
+        res.status(404).end()
+    }
+})
+
+// subscribe event
 eventsRouter.post('/subscribe/:id', async (req, res) => {
     const event = await Event.findById(req.params.id)
     if (!event) {
         return res.status(404).json({ error: 'Event not found' })
+    }
+    if (event.subscribers.length == event.maxParticipants){
+        return res.status(400).json({ error: 'Event is full' })
     }
     // decode token
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
@@ -122,7 +148,7 @@ eventsRouter.post('/subscribe/:id', async (req, res) => {
 }
 )
 
-
+// unsubscribe event
 eventsRouter.post('/unsubscribe/:id', async (req, res) => {
     const event = await Event.findById(req.params.id)
     if (!event) {

@@ -10,28 +10,30 @@ import HomePage from './pages/HomePage';
 import EventsPage from './pages/EventsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import EventPage, { eventLoader } from './pages/EventPage';
-import EditEventPage from './pages/EditEventPage';
 import MyEventsPage from './pages/MyEventsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AddEventPage from './pages/AddEventPage';
 import { UserProvider } from './context/UserContext';
+import {createEvent, updateEvent, deleteEvent} from "./services/event";
 
 function App() {
 
   const addEvent = async (newEvent) => {
+    await createEvent(newEvent)
     return;
   };
 
   // Delete Event
-  const deleteEvent = async (id) => {
-
+  const deleteEventFunction = async (id) => {
+    await deleteEvent(id)
     return;
   };
 
   // Update Event
-  const updateEvent = async (event) => {
-
+  const updateEventFunction = async (event) => {
+    console.log(event)
+    await updateEvent({id:event.id, newObj:event})
     return;
   };
 
@@ -43,15 +45,15 @@ function App() {
         <Route path='/my-events' element={<MyEventsPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/sign-up' element={<RegisterPage />} />
-        <Route path='/add-event' element={<AddEventPage addEventSubmit={addEvent} />} />
+        <Route path='/add-event' element={<AddEventPage saveEventSubmit={addEvent} />} />
         <Route
           path='/edit-event/:id'
-          element={<EditEventPage addEventSubmit={updateEvent} />}
+          element={<AddEventPage saveEventSubmit={updateEventFunction} edit={true}/>}
           loader={eventLoader}
         />
         <Route
           path='/events/:id'
-          element={<EventPage deleteEvent={deleteEvent} />}
+          element={<EventPage deleteEvent={deleteEventFunction} />}
           loader={eventLoader}
         />
         <Route path='*' element={<NotFoundPage />} />
@@ -60,9 +62,9 @@ function App() {
   );
 
   return (
-    <UserProvider>
-      <RouterProvider router={router} />
-    </UserProvider>
+      <UserProvider>
+        <RouterProvider router={router} />
+      </UserProvider>
   );
 }
 

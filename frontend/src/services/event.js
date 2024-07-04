@@ -22,12 +22,14 @@ export const getEventByUser = async () => {
     if (!token) {
         return []
     }
-
-    const response = await axios.get(url + `/user`, { headers: { Authorization: token } })
-    if (response.status !== 200) {
-        return []
+    try {
+        const response = await axios.get(url + `/user`, { headers: { Authorization: token } })
+        return response.data
+    } catch (error) {
+        if (error.response.status !== 200) {
+            return []
+        }
     }
-    return response.data
 }
 
 export const getAllEvents = async (limit) => {
@@ -37,7 +39,7 @@ export const getAllEvents = async (limit) => {
 
 export const createEvent = async (newObj) => {
     const config = {
-        headers: { Authorization: setToken }
+        headers: { Authorization: setToken() }
     }
     const response = await axios.post(url, newObj, config)
     return response.data
@@ -48,6 +50,14 @@ export const updateEvent = async ({ id, newObj }) => {
         headers: { Authorization: setToken() }
     }
     const response = await axios.put(url + `/${id}`, newObj, config)
+    return response.data
+}
+
+export const deleteEvent = async (id) => {
+    const config = {
+        headers: { Authorization: setToken() }
+    }
+    const response = await axios.delete(url + `/${id}`, config)
     return response.data
 }
 
