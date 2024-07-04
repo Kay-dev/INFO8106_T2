@@ -8,10 +8,10 @@ const loginRouter = require('./controllers/login')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger');
 const mongoose = require('mongoose');
-var history = require('connect-history-api-fallback');
+// var history = require('connect-history-api-fallback');
 
 const app = express();
-app.use(history());
+// app.use(history());
 
 const url = config.MONGODB_URI
 mongoose.set('strictQuery', false);
@@ -28,7 +28,7 @@ mongoose.connect(url)
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static("dist"))
+// app.use(express.static("dist"))
 // middlewares
 app.use(middleware.requestLogger)
 

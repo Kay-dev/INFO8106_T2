@@ -3,7 +3,7 @@ const Event = require('../models/Event')
 const User = require('../models/User')
 const {checkSchema} = require('express-validator')
 const jwt = require('jsonwebtoken');
-
+const {authenticateToken} = require('../utils/middleware')
 
 const checkSchemas = checkSchema({
     // username: {
@@ -41,6 +41,20 @@ const checkSchemas = checkSchema({
     // }
 })
 
+const checkRole = (role) => {
+    return (req, res, next) => {
+      if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+  
+      if (req.user.role !== role) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+  
+      next();
+    };
+  };
+
 // get all events
 eventsRouter.get('/', async (req, res) => {
     const events = await Event.find({}).populate('host', { username: 1, email: 1, phone: 1, description: 1 }).sort({'_id': -1})
@@ -55,14 +69,9 @@ eventsRouter.get('/', async (req, res) => {
 })
 
 // get events by user
-eventsRouter.get('/user', async (req, res) => {
-    // decode token
-    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
-    if (!decodedToken.id) {
-        return res.status(401).json({ error: 'Token missing or invalid' })
-    }
+eventsRouter.get('/user', authenticateToken, async (req, res) => {
     // get user info
-    const user = await User.findById(decodedToken.id).populate('events')
+    const user = await User.findById(req.user.id).populate('events')
     if (!user) {
         return res.status(404).json({ error: 'User not found' })
     }
@@ -81,7 +90,7 @@ eventsRouter.get('/:id', async (req, res) => {
 
 
 // add new event
-eventsRouter.post('/', checkSchemas, async (req, res) => {
+eventsRouter.post('/', authenticateToken, checkRole('admin'), async (req, res) => {
     const {host} = req.body
     const user = await User.findOne({_id: host})
     if (!user) {
@@ -103,7 +112,7 @@ eventsRouter.post('/', checkSchemas, async (req, res) => {
 })
 
 // update event
-eventsRouter.put('/:id', async (req, res) => {
+eventsRouter.put('/:id',authenticateToken, checkRole('admin'), async (req, res) => {
     const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true })
     if (updatedEvent) {
         res.json(updatedEvent)
@@ -113,7 +122,7 @@ eventsRouter.put('/:id', async (req, res) => {
 })
 
 // delete event
-eventsRouter.delete('/:id', async (req, res) => {
+eventsRouter.delete('/:id',authenticateToken, checkRole('admin'), async (req, res) => {
     const deletedEvent = await Event.findByIdAndDelete(req.params.id)
     if (deletedEvent) {
         res.status(204).end()
@@ -123,7 +132,7 @@ eventsRouter.delete('/:id', async (req, res) => {
 })
 
 // subscribe event
-eventsRouter.post('/subscribe/:id', async (req, res) => {
+eventsRouter.post('/subscribe/:id',authenticateToken, checkRole('user'), async (req, res) => {
     const event = await Event.findById(req.params.id)
     if (!event) {
         return res.status(404).json({ error: 'Event not found' })
@@ -131,13 +140,8 @@ eventsRouter.post('/subscribe/:id', async (req, res) => {
     if (event.subscribers.length == event.maxParticipants){
         return res.status(400).json({ error: 'Event is full' })
     }
-    // decode token
-    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
-    if (!decodedToken.id) {
-        return res.status(401).json({ error: 'Token missing or invalid' })
-    }
     // get user info
-    const user = await User.findById(decodedToken.id)
+    const user = await User.findById(req.user.id)
     // update event subscribers
     event.subscribers.push(user._id)
     await event.save()
@@ -149,16 +153,12 @@ eventsRouter.post('/subscribe/:id', async (req, res) => {
 )
 
 // unsubscribe event
-eventsRouter.post('/unsubscribe/:id', async (req, res) => {
+eventsRouter.post('/unsubscribe/:id',authenticateToken, checkRole('user'), async (req, res) => {
     const event = await Event.findById(req.params.id)
     if (!event) {
         return res.status(404).json({ error: 'Event not found' })
     }
-    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
-    if (!decodedToken.id) {
-        return res.status(401).json({ error: 'Token missing or invalid' })
-    }
-    const user = await User.findById(decodedToken.id)
+    const user = await User.findById(req.user.id)
     event.subscribers.splice(event.subscribers.indexOf(user._id), 1)
     await event.save()
     user.events.splice(user.events.indexOf(event._id), 1)
@@ -166,13 +166,5 @@ eventsRouter.post('/unsubscribe/:id', async (req, res) => {
     res.status(200).json(event)
 }
 )
-
-const getTokenFrom = request => {
-    const authorization = request.get('authorization')
-    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-        return authorization.substring(7)
-    }
-    return null
-}
 
 module.exports = eventsRouter
