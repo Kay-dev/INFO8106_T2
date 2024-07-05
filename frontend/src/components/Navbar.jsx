@@ -2,7 +2,7 @@ import { NavLink, useNavigate, useLocation  } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import {useUser} from "../context/UserContext";
 import { toast } from 'react-toastify';
-
+import {logout} from "../services/login";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -19,11 +19,7 @@ const Navbar = () => {
     e.preventDefault();
 
     try {
-      // 调用登出 API
-      // await fetch('/api/logout', {
-      //   method: 'POST',
-
-      // });
+      await logout();
       userLogout();
       if (location.pathname === window.location.pathname) {
         window.location.reload();
