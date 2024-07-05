@@ -1,6 +1,6 @@
 const logger = require('./logger')
 const jwt = require('jsonwebtoken');
-
+const redisManager = require('../utils/redisUtils');
 
 const requestLogger = (request, response, next) => {
     logger.info('Time:  ', new Date().toISOString())
@@ -16,15 +16,16 @@ const unknownEndpoint = (req, res) => {
     res.status(404).send({ error: 'unknown endpoint' })
 }
 
-const authenticateToken = (req, res, next) => {
+const authenticateToken = async (req, res, next) =>  {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-  
-    if (token == null) return res.sendStatus(401);
-  
+    const isTokenBlacklisted = await redisManager.isTokenBlacklisted(token)
+    if (token == null || isTokenBlacklisted) return res.sendStatus(401);
+
     jwt.verify(token, process.env.SECRET, (err, user) => {
       if (err) return res.sendStatus(403);
       req.user = user;
+      req.token = token;
       next();
     });
   };
