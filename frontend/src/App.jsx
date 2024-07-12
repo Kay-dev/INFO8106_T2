@@ -14,8 +14,12 @@ import MyEventsPage from './pages/MyEventsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AddEventPage from './pages/AddEventPage';
-import { UserProvider } from './context/UserContext';
-import {createEvent, updateEvent, deleteEvent} from "./services/event";
+import { UserProvider, useUser } from './context/UserContext';
+import { createEvent, updateEvent, deleteEvent } from "./services/event";
+import { CourierProvider } from "@trycourier/react-provider";
+import {useEffect} from "react";
+import Spinner from './components/Spinner';
+
 
 function App() {
 
@@ -33,7 +37,7 @@ function App() {
   // Update Event
   const updateEventFunction = async (event) => {
     console.log(event)
-    await updateEvent({id:event.id, newObj:event})
+    await updateEvent({ id: event.id, newObj: event })
     return;
   };
 
@@ -48,7 +52,7 @@ function App() {
         <Route path='/add-event' element={<AddEventPage saveEventSubmit={addEvent} />} />
         <Route
           path='/edit-event/:id'
-          element={<AddEventPage saveEventSubmit={updateEventFunction} edit={true}/>}
+          element={<AddEventPage saveEventSubmit={updateEventFunction} edit={true} />}
           loader={eventLoader}
         />
         <Route
@@ -62,9 +66,20 @@ function App() {
   );
 
   return (
-      <UserProvider>
-        <RouterProvider router={router} />
-      </UserProvider>
+    <UserProvider>
+      <AppContent router={router} />
+    </UserProvider>
+  );
+}
+
+function AppContent({ router }) {
+  const { user } = useUser();
+
+  return (
+
+    <CourierProvider clientKey={import.meta.env.VITE_COURIER_KEY} userId={user?.userid} debug={true}>
+      <RouterProvider router={router} />
+    </CourierProvider>
   );
 }
 

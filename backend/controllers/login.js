@@ -28,6 +28,7 @@ loginRouter.post("/", async (req, res) => {
     }
     // create token, expres in 1 hour
     const token = jwt.sign(data, process.env.SECRET, {expiresIn: '1h'})
+
     return res.status(200).send({ token, userid: user._id, role: user.role, permissions: user.permissions })
 })
 
@@ -38,6 +39,10 @@ loginRouter.post("/logout", authenticateToken, async (req, res) => {
     res.clearCookie('token')
     return res.status(200).send({ message: "Logout successful" })
 })
+
+
+
+
 
 
 module.exports = loginRouter

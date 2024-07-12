@@ -9,6 +9,7 @@ export const login = async ({email, password}) => {
         if (response.status !== 200) {
             throw new Error(response.data.error || 'Login failed')
         }
+        
         return response.data
     } catch (error) {
         throw new Error(error.response?.data?.error || 'Login failed')

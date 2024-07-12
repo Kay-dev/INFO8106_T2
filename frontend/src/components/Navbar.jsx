@@ -3,6 +3,7 @@ import logo from '../assets/logo.png';
 import {useUser} from "../context/UserContext";
 import { toast } from 'react-toastify';
 import {logout} from "../services/login";
+import { Inbox } from "@trycourier/react-inbox";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -72,6 +73,8 @@ const Navbar = () => {
                   Events
                 </NavLink>
                 {user && getMenuForRole(user.role)}
+              
+
                 {
                   user ? 
                     <NavLink to='/logout' className={linkClass} onClick={handleLogout} >
@@ -88,6 +91,8 @@ const Navbar = () => {
                       </>
                     )
                 }
+
+                <Inbox  className=' px-3 py-2'/>
               </div>
             </div>
           </div>

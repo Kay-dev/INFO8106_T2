@@ -1,45 +1,12 @@
 const eventsRouter = require('express').Router();
 const Event = require('../models/Event')
 const User = require('../models/User')
+const EventMessage = require('../models/EventMessage')
 const {checkSchema} = require('express-validator')
 const jwt = require('jsonwebtoken');
 const {authenticateToken} = require('../utils/middleware')
+const {sendSubMessage, sendUnsubMessage} = require('../utils/message')
 
-const checkSchemas = checkSchema({
-    // username: {
-    //     in: ['body'],
-    //     isString: true,
-    //     notEmpty: true,
-    //     errorMessage: 'username is required'
-    // },
-    // password: {
-    //     in: ['body'],
-    //     isString: true,
-    //     notEmpty: true,
-    //     errorMessage: 'password is required',
-    //     isLength: {
-    //         options: {min: 8},
-    //         errorMessage: 'password must be at least 8 characters long'
-    //     }
-    // },
-    // email: {
-    //     in: ['body'],
-    //     notEmpty: true,
-    //     isEmail: true,
-    //     errorMessage: 'invalid email address'
-    // },
-    // phone: {
-    //     in: ['body'],
-    //     isString: true,
-    //     notEmpty: true,
-    //     isMobilePhone: true,
-    //     errorMessage: 'invalid phone number'
-    // },
-    // description: {
-    //     in: ['body'],
-    //     isString: true,
-    // }
-})
 
 const checkRole = (role) => {
     return (req, res, next) => {
@@ -124,6 +91,7 @@ eventsRouter.put('/:id',authenticateToken, checkRole('admin'), async (req, res) 
 // delete event
 eventsRouter.delete('/:id',authenticateToken, checkRole('admin'), async (req, res) => {
     const deletedEvent = await Event.findByIdAndDelete(req.params.id)
+    await EventMessage.deleteMany({event: req.params.id})
     if (deletedEvent) {
         res.status(204).end()
     } else {
@@ -148,6 +116,9 @@ eventsRouter.post('/subscribe/:id',authenticateToken, checkRole('user'), async (
     // update user events
     user.events.push(event._id)
     await user.save()
+    await EventMessage.create({event: event._id, user: user._id})
+    // send message to user
+    await sendSubMessage(user._id, event.title)
     res.status(200).json(event)
 }
 )
@@ -163,6 +134,9 @@ eventsRouter.post('/unsubscribe/:id',authenticateToken, checkRole('user'), async
     await event.save()
     user.events.splice(user.events.indexOf(event._id), 1)
     await user.save()
+    await EventMessage.deleteOne({event: event._id, user: user._id})
+    // send message to user
+    await sendUnsubMessage(user._id, event.title)
     res.status(200).json(event)
 }
 )
