@@ -32,8 +32,23 @@ export const getEventByUser = async () => {
     }
 }
 
-export const getAllEvents = async (limit) => {
-    const response = await axios.get(url + `?limit=${limit}`)
+export const getAllEvents = async (limit,searchParams) => {
+    let requestUrl = url;
+
+    const params = new URLSearchParams();
+    if (limit) {
+        params.append('limit', limit);
+    }
+    if (searchParams) {
+        Object.keys(searchParams).forEach(key => {
+            params.append(key, searchParams[key]);
+        });
+    }
+    if (params.toString()) {
+        requestUrl += `?${params.toString()}`;
+    }
+
+    const response = await axios.get(requestUrl)
     return response.data
 }
 

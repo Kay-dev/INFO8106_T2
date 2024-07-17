@@ -6,7 +6,15 @@ const {checkSchema} = require('express-validator')
 const jwt = require('jsonwebtoken');
 const {authenticateToken} = require('../utils/middleware')
 const {sendSubMessage, sendUnsubMessage} = require('../utils/message')
+const dayjs = require('dayjs');
 
+const parseDate = (dateString) => {
+    if (dateString === 'null' || !dateString) {
+        return null;
+    }
+    const date = dayjs(dateString);
+    return date.isValid() ? date.toDate() : null;
+};
 
 const checkRole = (role) => {
     return (req, res, next) => {
@@ -24,15 +32,31 @@ const checkRole = (role) => {
 
 // get all events
 eventsRouter.get('/', async (req, res) => {
-    const events = await Event.find({}).populate('host', { username: 1, email: 1, phone: 1, description: 1 }).sort({'_id': -1})
-    let limit = req.query.limit
-    
-    if (limit){
-        res.json(events.slice(0, limit))
-    } else{
-        res.json(events)
+    const { limit, searchTerm, searchType, startDate, endDate } = req.query;
 
+    // build query object
+    const query = {};
+    if (searchTerm) {
+        query.title = { $regex: searchTerm, $options: 'i' }; 
     }
+    if (searchType) {
+        query.type = searchType;
+    }
+    const parsedStartDate = parseDate(startDate);
+    const parsedEndDate = parseDate(endDate);
+    if (parsedStartDate && parsedEndDate){
+        query.startTime = { $gte: parsedStartDate, $lte: parsedEndDate };
+    } else if (parsedStartDate){
+        query.startTime = { $gte: parsedStartDate };
+    } else if (parsedEndDate){
+        query.startTime = { $lte: parsedEndDate };
+    }
+
+    let events = await Event.find(query).populate('host', { username: 1, email: 1, phone: 1, description: 1 }).sort({'_id': -1})
+    if (limit) {
+        events = events.slice(0, parseInt(limit));
+    }
+    res.json(events)
 })
 
 // get events by user

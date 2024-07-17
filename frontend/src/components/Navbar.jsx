@@ -1,14 +1,25 @@
-import { NavLink, useNavigate, useLocation  } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
-import {useUser} from "../context/UserContext";
+import { useUser } from "../context/UserContext";
 import { toast } from 'react-toastify';
-import {logout} from "../services/login";
+import { logout } from "../services/login";
 import { Inbox } from "@trycourier/react-inbox";
+
+const theme ={
+  message: {
+    unreadIndicator: {
+      color: 'white',
+    },
+    icon: {
+      color: 'white',
+    }
+  }
+}
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const {user, userLogout} = useUser();
+  const { user, userLogout } = useUser();
 
 
   const linkClass = ({ isActive }) =>
@@ -24,7 +35,7 @@ const Navbar = () => {
       userLogout();
       if (location.pathname === window.location.pathname) {
         window.location.reload();
-      } else{
+      } else {
         navigate('/');
       }
       toast.success('You have successfully logged out.');
@@ -73,26 +84,26 @@ const Navbar = () => {
                   Events
                 </NavLink>
                 {user && getMenuForRole(user.role)}
-              
+
 
                 {
                   user ? 
+                  <>
                     <NavLink to='/logout' className={linkClass} onClick={handleLogout} >
                       Log out
                     </NavLink>
-                    :(
-                      <>
-                        <NavLink to='/login' className={linkClass}>
-                          Login
-                        </NavLink>
-                        <NavLink to='/sign-up' className={linkClass}>
-                          Sign Up
-                        </NavLink>
-                      </>
-                    )
+                    <Inbox className='custom-icon px-3 py-2' theme= {theme} />
+                  </>
+                    :
+                    <>
+                      <NavLink to='/login' className={linkClass}>
+                        Login
+                      </NavLink>
+                      <NavLink to='/sign-up' className={linkClass}>
+                        Sign Up
+                      </NavLink>
+                    </>
                 }
-
-                <Inbox  className=' px-3 py-2'/>
               </div>
             </div>
           </div>

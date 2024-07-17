@@ -19,6 +19,8 @@ import { createEvent, updateEvent, deleteEvent } from "./services/event";
 import { CourierProvider } from "@trycourier/react-provider";
 import {useEffect} from "react";
 import Spinner from './components/Spinner';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
 function App() {
@@ -66,9 +68,12 @@ function App() {
   );
 
   return (
-    <UserProvider>
-      <AppContent router={router} />
-    </UserProvider>
+     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <UserProvider>
+        <AppContent router={router} />
+      </UserProvider>
+    </LocalizationProvider>
+
   );
 }
 

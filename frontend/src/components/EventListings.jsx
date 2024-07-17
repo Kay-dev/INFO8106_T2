@@ -5,7 +5,7 @@ import data from '../../data.json';
 import { getAllEvents,getEventByUser } from '../services/event'
 import { useUser } from '../context/UserContext';
 
-const EventListings = ({ isHome = false, myEvent = false }) => {
+const EventListings = ({ isHome = false, myEvent = false, searchParams }) => {
   const [events, setEvents] = useState(data);
   const [userEvents, setUserEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,7 @@ const EventListings = ({ isHome = false, myEvent = false }) => {
           setUserEvents(userEvents.map((e) => e.id));
         } else{
           // get all events
-          const data = await getAllEvents(isHome?3:'')
+          const data = await getAllEvents(isHome?3:'', searchParams)
           setEvents(data);
           // get users events
           setUserEvents(userEvents.map((e) => e.id));
@@ -34,7 +34,7 @@ const EventListings = ({ isHome = false, myEvent = false }) => {
       }
     };
     fetchEvents();
-  }, []);
+  }, [isHome, myEvent, searchParams]);
 
   const handleSubscribe = (eventId) => {
     console.log('Subscribing to event', eventId);
