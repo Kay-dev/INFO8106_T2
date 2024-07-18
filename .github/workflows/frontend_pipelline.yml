@@ -1,0 +1,33 @@
+name: Deployment pipeline
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4.0.2
+        with:
+          node-version: '20'
+          
+      - name: npm install
+        run: |
+          cd frontend
+          npm install
+          
+      - name: build
+        run: |
+          cd frontend
+          npm run build
+          
+      - name: deploy
+        if: github.ref == 'refs/heads/main'
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_FRONTEND_HOOK_URL }}
+        run: |
+          curl "$deploy_url"
+        
