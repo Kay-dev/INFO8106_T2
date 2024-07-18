@@ -33,11 +33,7 @@ const Navbar = () => {
     try {
       await logout();
       userLogout();
-      if (location.pathname === window.location.pathname) {
-        window.location.reload();
-      } else {
-        navigate('/');
-      }
+      navigate('/');
       toast.success('You have successfully logged out.');
     } catch (error) {
       console.error('Error during logout:', error);

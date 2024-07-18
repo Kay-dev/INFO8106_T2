@@ -1,7 +1,7 @@
 const usersRouter = require('express').Router();
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
-const {checkSchema} = require('express-validator')
+const {checkSchema, validationResult } = require('express-validator')
 
 const checkSchemas = checkSchema({
     username: {
@@ -39,8 +39,14 @@ const checkSchemas = checkSchema({
     }
 })
 
+// create new user
 usersRouter.post('/', checkSchemas, async (req, res) => {
-    const {username, password, email, phone, description} = req.body
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {username, password, email, phone,role, description} = req.body
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(password, saltRounds)
     const user = new User({
@@ -49,7 +55,7 @@ usersRouter.post('/', checkSchemas, async (req, res) => {
         email: email,
         phone: phone,
         description: description,
-        role: 'user',
+        role: role,
         permissions: ['my events']
     })
     const savedUser = await user.save()

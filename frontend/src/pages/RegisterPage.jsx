@@ -22,6 +22,7 @@ const RegisterPage = () => {
                         password: '',
                         confirmPassword: '',
                         phone: '',
+                        role: '',
                         description: ''
                     }}
                     validationSchema={Yup.object({
@@ -30,6 +31,7 @@ const RegisterPage = () => {
                         password: Yup.string().required('password is required'),
                         confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required('password is required'),
                         phone: Yup.number().required('phone number is required'),
+                        role: Yup.string().required('role is required'),
                         description: Yup.string().max(255, 'Must be 255 characters or less'),
                     })}
                     onSubmit={async (values, { setSubmitting }) => {
@@ -76,6 +78,16 @@ const RegisterPage = () => {
                                     <Field type="tel" id="phone" name="phone" required
                                         className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
                                     <ErrorMessage name="phone" component="div" className="text-red-500 text-sm mt-2" />
+                                </div>
+                                <div className="mb-4">
+                                    <label htmlFor="role" className="block text-gray-700">User Type</label>
+                                    <Field as="select" type="tel" id="role" name="role" required
+                                        className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" >
+                                            <option value="" label="--------Select type--------" />
+                                            <option value="user" selected>user</option>
+                                            <option value="host">host</option>
+                                    </Field>
+                                    <ErrorMessage name="role" component="div" className="text-red-500 text-sm mt-2" />
                                 </div>
                                 {/* <div className="mb-4">
                                     <label htmlFor="description" className="block text-gray-700">Description</label>
