@@ -1,0 +1,38 @@
+name: Deployment pipeline
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4.0.2
+        with:
+          node-version: '20'
+          
+      - name: npm install
+        run: |
+          cd backend
+          npm install
+          
+      - name: test
+        run: |
+          cd backend
+          npm run test
+      
+      - name: build
+        run: |
+          cd backend
+          npm run build
+    
+      - name: deploy
+        if: github.ref == 'refs/heads/main'
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_BACKEND_HOOK_URL }}
+        run: |
+          curl "$deploy_url"
+        
