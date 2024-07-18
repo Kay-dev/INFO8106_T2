@@ -165,4 +165,5 @@ eventsRouter.post('/unsubscribe/:id', authenticateToken, checkRole('user'), asyn
 }
 )
 
+
 module.exports = eventsRouter
