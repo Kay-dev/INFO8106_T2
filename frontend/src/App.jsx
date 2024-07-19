@@ -32,8 +32,11 @@ function App() {
 
   // Delete Event
   const deleteEventFunction = async (id) => {
-    await deleteEvent(id)
-    return;
+    try {
+       await deleteEvent(id)
+    } catch (error) {
+      throw new Error(error.response.data.error || 'Delete failed')
+    }
   };
 
   // Update Event

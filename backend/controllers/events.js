@@ -114,6 +114,13 @@ eventsRouter.put('/:id', authenticateToken, checkRole('admin'), async (req, res)
 
 // delete event
 eventsRouter.delete('/:id', authenticateToken, checkRole('admin'), async (req, res) => {
+    const event = await Event.findById(req.params.id)
+    if (!event) {
+        return res.status(404).end()
+    }
+    if(event.subscribers.length > 0) {
+        return res.status(400).json({ error: 'Event has subscribers, cannot be deleted' })
+    }
     const deletedEvent = await Event.findByIdAndDelete(req.params.id)
     await EventMessage.deleteMany({ event: req.params.id })
     if (deletedEvent) {

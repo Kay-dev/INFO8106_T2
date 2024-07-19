@@ -12,15 +12,19 @@ const EventPage = ({  deleteEvent }) => {
   const event = useLoaderData();
   const {user} = useUser();
 
-  const onDeleteClick = (Id) => {
+  const onDeleteClick =async (Id) => {
     const confirm = window.confirm(
       'Are you sure you want to delete this event?'
     );
 
     if (!confirm) return;
-    deleteEvent(Id);
-    toast.success('Event deleted successfully');
-    navigate('/events');
+    try {
+      await deleteEvent(Id);
+      toast.success('Event deleted successfully');
+      navigate('/events');
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
