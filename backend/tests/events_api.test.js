@@ -146,6 +146,8 @@ describe('Events API', () => {
     });
   
     test('DELETE /api/events/:id should delete an event', async () => {
+      const mockEvents = { _id: '1', title: 'Event 1', subscribers: []};
+      Event.findById.mockResolvedValue(mockEvents);
       Event.findByIdAndDelete.mockResolvedValue(true);
       EventMessage.deleteMany.mockResolvedValue(true);
       authenticateToken.mockImplementation((req, res, next) => {
@@ -156,6 +158,41 @@ describe('Events API', () => {
         .delete('/api/events/1')
   
       expect(response.status).toBe(204);
+      expect(Event.findById).toHaveBeenCalledWith('1');
+      expect(Event.findByIdAndDelete).toHaveBeenCalledWith('1');
+      expect(EventMessage.deleteMany).toHaveBeenCalledWith({ event: '1' });
+    });
+
+    test('DELETE /api/events/:id should return 404 if event does not exist', async () => {
+      Event.findById.mockResolvedValue(null);
+      authenticateToken.mockImplementation((req, res, next) => {
+        req.user = { role: 'admin' };
+        next();
+      });
+      const response = await request(app).delete('/api/events/1');
+  
+      expect(response.status).toBe(404);
+      expect(Event.findById).toHaveBeenCalledWith('1');
+      expect(Event.findByIdAndDelete).not.toHaveBeenCalled();
+      expect(EventMessage.deleteMany).not.toHaveBeenCalled();
+    });
+
+    test('DELETE /api/events/:id should return 400 if event has subscribers', async () => {
+      Event.findById.mockResolvedValue({
+        _id: 'eventId',
+        subscribers: ['userId'],
+      });
+      authenticateToken.mockImplementation((req, res, next) => {
+        req.user = { role: 'admin' };
+        next();
+      });
+      const response = await request(app).delete('/api/events/eventId');
+  
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Event has subscribers, cannot be deleted');
+      expect(Event.findById).toHaveBeenCalledWith('eventId');
+      expect(Event.findByIdAndDelete).not.toHaveBeenCalled();
+      expect(EventMessage.deleteMany).not.toHaveBeenCalled();
     });
 
     test('POST /api/events/subscribe/:id should subscribe user to event', async () => {
